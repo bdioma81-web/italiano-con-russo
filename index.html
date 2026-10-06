@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Итальянский с русского</title>
+<style>
+body{font-family:system-ui,-apple-system,Segoe UI,sans-serif;max-width:900px;margin:auto;padding:16px;background:#fff;color:#111}
+.card{border:1px solid #ddd;border-radius:14px;padding:16px;margin:12px 0}
+button,textarea{font:inherit} button{min-height:44px;margin:4px;padding:8px 12px;border:1px solid #aaa;border-radius:10px;background:white;cursor:pointer}
+button:hover{background:#f4f4f4}.phrase{font-size:1.55rem;font-weight:700}.ru{font-size:1.15rem;margin:8px 0}
+.grid{display:flex;flex-wrap:wrap;gap:4px}.grid button{min-width:44px}.done{background:#e9f8e9} textarea{width:100%;min-height:90px;box-sizing:border-box}
+.hidden{display:none}.muted{color:#555}.status{font-weight:600;margin-left:6px}
+</style>
+</head>
+<body>
+<h1>Итальянский с русского</h1>
+<p>Уровень 1 · 150 базовых разговорных фраз · Русский → Итальянский</p>
+
+<div class="card">
+<b id="num"></b>
+<div id="it" class="phrase"></div>
+<div id="ru" class="ru"></div>
+<button id="play">▶ Прослушать фразу</button><button id="stop">■ Стоп</button><br>
+<button id="rep5">Повторить 5 раз</button><button id="rep10">Повторить 10 раз</button><br>
+<button id="prev">← Предыдущая</button><button id="next">Следующая →</button><br>
+<button id="toggleRu">Показать / скрыть русский</button>
+<button id="toggleIt">Показать / скрыть итальянский</button>
+<button id="studied">✓ Изучено</button><span id="status" class="status"></span>
+</div>
+
+<div class="card"><h3>Как заниматься</h3>
+<p>1. Прослушайте фразу несколько раз. 2. Повторите её вслух 5–10 раз. 3. Перепишите фразу от руки, произнося слова. 4. Скройте итальянский и переведите русский текст письменно. 5. Затем переведите его устно и проверьте себя по оригиналу.</p>
+</div>
+<div class="card"><h3>Shadowing — повторение за диктором</h3>
+<p>Слушайте итальянскую фразу и сразу повторяйте её вслух, стараясь копировать произношение, ритм и интонацию. После каждой фразы есть пауза примерно в 1,5× её длительности.</p>
+<button id="shadow5">Фраза ×5</button><button id="shadow10">Фраза ×10</button>
+</div>
+<div class="card"><h3>Scriptorium — письмо и произношение</h3><p>Перепишите итальянскую фразу от руки. Пока пишете каждое слово, произносите его вслух. Затем прочитайте всю фразу ещё раз.</p></div>
+<div class="card"><h3>Письменный перевод</h3><p>Скройте итальянскую фразу. Глядя только на русский текст, напишите перевод по-итальянски. Затем покажите оригинал, сравните и исправьте ошибки.</p><textarea placeholder="Напишите перевод по-итальянски..."></textarea></div>
+<div class="card"><h3>Устный перевод</h3><p>Скройте итальянскую фразу. Прочитайте русский вариант и скажите перевод вслух по-итальянски. Затем покажите оригинал и повторите правильный вариант.</p></div>
+<div class="card"><h3>Все фразы</h3><div id="grid" class="grid"></div></div>
+
+<script>
+const D=[{"n": 1, "ru": "Привет!", "it": "Ciao!"}, {"n": 2, "ru": "Доброе утро.", "it": "Buongiorno."}, {"n": 3, "ru": "Добрый вечер.", "it": "Buonasera."}, {"n": 4, "ru": "Спокойной ночи.", "it": "Buonanotte."}, {"n": 5, "ru": "До свидания.", "it": "Arrivederci."}, {"n": 6, "ru": "До скорого.", "it": "A presto."}, {"n": 7, "ru": "Пожалуйста.", "it": "Per favore."}, {"n": 8, "ru": "Спасибо.", "it": "Grazie."}, {"n": 9, "ru": "Большое спасибо.", "it": "Grazie mille."}, {"n": 10, "ru": "Не за что.", "it": "Prego."}, {"n": 11, "ru": "Извините.", "it": "Mi scusi."}, {"n": 12, "ru": "Прости.", "it": "Scusa."}, {"n": 13, "ru": "Да.", "it": "Sì."}, {"n": 14, "ru": "Нет.", "it": "No."}, {"n": 15, "ru": "Хорошо.", "it": "Va bene."}, {"n": 16, "ru": "Конечно.", "it": "Certo."}, {"n": 17, "ru": "Может быть.", "it": "Forse."}, {"n": 18, "ru": "Я не знаю.", "it": "Non lo so."}, {"n": 19, "ru": "Я понимаю.", "it": "Capisco."}, {"n": 20, "ru": "Я не понимаю.", "it": "Non capisco."}, {"n": 21, "ru": "Повторите, пожалуйста.", "it": "Ripeta, per favore."}, {"n": 22, "ru": "Говорите медленнее, пожалуйста.", "it": "Parli più lentamente, per favore."}, {"n": 23, "ru": "Что это значит?", "it": "Che cosa significa?"}, {"n": 24, "ru": "Как это сказать по-итальянски?", "it": "Come si dice in italiano?"}, {"n": 25, "ru": "Как тебя зовут?", "it": "Come ti chiami?"}, {"n": 26, "ru": "Меня зовут...", "it": "Mi chiamo..."}, {"n": 27, "ru": "Очень приятно.", "it": "Piacere."}, {"n": 28, "ru": "Как дела?", "it": "Come stai?"}, {"n": 29, "ru": "Хорошо, спасибо.", "it": "Bene, grazie."}, {"n": 30, "ru": "А ты?", "it": "E tu?"}, {"n": 31, "ru": "Откуда ты?", "it": "Di dove sei?"}, {"n": 32, "ru": "Я из России.", "it": "Vengo dalla Russia."}, {"n": 33, "ru": "Я живу в Италии.", "it": "Vivo in Italia."}, {"n": 34, "ru": "Я немного говорю по-итальянски.", "it": "Parlo un po' italiano."}, {"n": 35, "ru": "Я учу итальянский.", "it": "Studio italiano."}, {"n": 36, "ru": "Сколько тебе лет?", "it": "Quanti anni hai?"}, {"n": 37, "ru": "Мне сорок лет.", "it": "Ho quarant'anni."}, {"n": 38, "ru": "Где ты живёшь?", "it": "Dove abiti?"}, {"n": 39, "ru": "Я работаю.", "it": "Lavoro."}, {"n": 40, "ru": "Я учусь.", "it": "Studio."}, {"n": 41, "ru": "Я устал.", "it": "Sono stanco."}, {"n": 42, "ru": "Я устала.", "it": "Sono stanca."}, {"n": 43, "ru": "Я голоден.", "it": "Ho fame."}, {"n": 44, "ru": "Я хочу пить.", "it": "Ho sete."}, {"n": 45, "ru": "Мне холодно.", "it": "Ho freddo."}, {"n": 46, "ru": "Мне жарко.", "it": "Ho caldo."}, {"n": 47, "ru": "Мне нравится.", "it": "Mi piace."}, {"n": 48, "ru": "Мне не нравится.", "it": "Non mi piace."}, {"n": 49, "ru": "Я хочу это.", "it": "Voglio questo."}, {"n": 50, "ru": "Мне это нужно.", "it": "Mi serve questo."}, {"n": 51, "ru": "Где туалет?", "it": "Dov'è il bagno?"}, {"n": 52, "ru": "Где вокзал?", "it": "Dov'è la stazione?"}, {"n": 53, "ru": "Где остановка?", "it": "Dov'è la fermata?"}, {"n": 54, "ru": "Где супермаркет?", "it": "Dov'è il supermercato?"}, {"n": 55, "ru": "Как туда добраться?", "it": "Come si arriva lì?"}, {"n": 56, "ru": "Это далеко?", "it": "È lontano?"}, {"n": 57, "ru": "Это близко?", "it": "È vicino?"}, {"n": 58, "ru": "Идите прямо.", "it": "Vada dritto."}, {"n": 59, "ru": "Поверните направо.", "it": "Giri a destra."}, {"n": 60, "ru": "Поверните налево.", "it": "Giri a sinistra."}, {"n": 61, "ru": "Я заблудился.", "it": "Mi sono perso."}, {"n": 62, "ru": "Я заблудилась.", "it": "Mi sono persa."}, {"n": 63, "ru": "Помогите, пожалуйста.", "it": "Mi aiuti, per favore."}, {"n": 64, "ru": "Сколько это стоит?", "it": "Quanto costa?"}, {"n": 65, "ru": "Это слишком дорого.", "it": "È troppo caro."}, {"n": 66, "ru": "Можно дешевле?", "it": "Può costare meno?"}, {"n": 67, "ru": "Я беру это.", "it": "Prendo questo."}, {"n": 68, "ru": "Можно оплатить картой?", "it": "Posso pagare con la carta?"}, {"n": 69, "ru": "У вас есть сдача?", "it": "Ha da cambiare?"}, {"n": 70, "ru": "Мне нужен чек.", "it": "Mi serve lo scontrino."}, {"n": 71, "ru": "Я просто смотрю.", "it": "Sto solo guardando."}, {"n": 72, "ru": "У вас есть другой размер?", "it": "Avete un'altra taglia?"}, {"n": 73, "ru": "У вас есть другой цвет?", "it": "Avete un altro colore?"}, {"n": 74, "ru": "Я хотел бы кофе.", "it": "Vorrei un caffè."}, {"n": 75, "ru": "Я хотела бы чай.", "it": "Vorrei un tè."}, {"n": 76, "ru": "Можно меню?", "it": "Posso avere il menù?"}, {"n": 77, "ru": "Я веган.", "it": "Sono vegano."}, {"n": 78, "ru": "Я веганка.", "it": "Sono vegana."}, {"n": 79, "ru": "Без мяса, пожалуйста.", "it": "Senza carne, per favore."}, {"n": 80, "ru": "Без молока, пожалуйста.", "it": "Senza latte, per favore."}, {"n": 81, "ru": "Без масла, пожалуйста.", "it": "Senza olio, per favore."}, {"n": 82, "ru": "Воду, пожалуйста.", "it": "Acqua, per favore."}, {"n": 83, "ru": "Счёт, пожалуйста.", "it": "Il conto, per favore."}, {"n": 84, "ru": "Очень вкусно.", "it": "È molto buono."}, {"n": 85, "ru": "Я сыт.", "it": "Sono sazio."}, {"n": 86, "ru": "Я сыта.", "it": "Sono sazia."}, {"n": 87, "ru": "Который час?", "it": "Che ore sono?"}, {"n": 88, "ru": "Сегодня.", "it": "Oggi."}, {"n": 89, "ru": "Завтра.", "it": "Domani."}, {"n": 90, "ru": "Вчера.", "it": "Ieri."}, {"n": 91, "ru": "Сейчас.", "it": "Adesso."}, {"n": 92, "ru": "Позже.", "it": "Più tardi."}, {"n": 93, "ru": "Утром.", "it": "La mattina."}, {"n": 94, "ru": "Днём.", "it": "Di giorno."}, {"n": 95, "ru": "Вечером.", "it": "La sera."}, {"n": 96, "ru": "В понедельник.", "it": "Lunedì."}, {"n": 97, "ru": "Во сколько?", "it": "A che ora?"}, {"n": 98, "ru": "Я опаздываю.", "it": "Sono in ritardo."}, {"n": 99, "ru": "Подождите минуту.", "it": "Aspetti un minuto."}, {"n": 100, "ru": "Я уже иду.", "it": "Sto arrivando."}, {"n": 101, "ru": "До завтра.", "it": "A domani."}, {"n": 102, "ru": "Увидимся позже.", "it": "Ci vediamo più tardi."}, {"n": 103, "ru": "Позвони мне.", "it": "Chiamami."}, {"n": 104, "ru": "Напиши мне.", "it": "Scrivimi."}, {"n": 105, "ru": "У меня нет времени.", "it": "Non ho tempo."}, {"n": 106, "ru": "У меня есть время.", "it": "Ho tempo."}, {"n": 107, "ru": "Что ты делаешь?", "it": "Che cosa fai?"}, {"n": 108, "ru": "Я дома.", "it": "Sono a casa."}, {"n": 109, "ru": "Я на работе.", "it": "Sono al lavoro."}, {"n": 110, "ru": "Я в дороге.", "it": "Sono per strada."}, {"n": 111, "ru": "Я занят.", "it": "Sono occupato."}, {"n": 112, "ru": "Я занята.", "it": "Sono occupata."}, {"n": 113, "ru": "Я свободен.", "it": "Sono libero."}, {"n": 114, "ru": "Я свободна.", "it": "Sono libera."}, {"n": 115, "ru": "Мне нужна помощь.", "it": "Ho bisogno di aiuto."}, {"n": 116, "ru": "Мне плохо.", "it": "Mi sento male."}, {"n": 117, "ru": "У меня болит голова.", "it": "Ho mal di testa."}, {"n": 118, "ru": "У меня болит живот.", "it": "Ho mal di pancia."}, {"n": 119, "ru": "Мне нужен врач.", "it": "Ho bisogno di un medico."}, {"n": 120, "ru": "Вызовите скорую помощь.", "it": "Chiami un'ambulanza."}, {"n": 121, "ru": "Где аптека?", "it": "Dov'è la farmacia?"}, {"n": 122, "ru": "Это срочно.", "it": "È urgente."}, {"n": 123, "ru": "Не волнуйся.", "it": "Non preoccuparti."}, {"n": 124, "ru": "Всё хорошо.", "it": "Va tutto bene."}, {"n": 125, "ru": "Будь осторожен.", "it": "Stai attento."}, {"n": 126, "ru": "Будь осторожна.", "it": "Stai attenta."}, {"n": 127, "ru": "Я согласен.", "it": "Sono d'accordo."}, {"n": 128, "ru": "Я не согласен.", "it": "Non sono d'accordo."}, {"n": 129, "ru": "Я думаю, что да.", "it": "Penso di sì."}, {"n": 130, "ru": "Я думаю, что нет.", "it": "Penso di no."}, {"n": 131, "ru": "Это правда.", "it": "È vero."}, {"n": 132, "ru": "Это неправда.", "it": "Non è vero."}, {"n": 133, "ru": "Почему?", "it": "Perché?"}, {"n": 134, "ru": "Потому что.", "it": "Perché."}, {"n": 135, "ru": "Когда?", "it": "Quando?"}, {"n": 136, "ru": "Где?", "it": "Dove?"}, {"n": 137, "ru": "Кто?", "it": "Chi?"}, {"n": 138, "ru": "Что?", "it": "Che cosa?"}, {"n": 139, "ru": "Как?", "it": "Come?"}, {"n": 140, "ru": "Какой?", "it": "Quale?"}, {"n": 141, "ru": "Сколько?", "it": "Quanto?"}, {"n": 142, "ru": "Я могу.", "it": "Posso."}, {"n": 143, "ru": "Я не могу.", "it": "Non posso."}, {"n": 144, "ru": "Я хочу.", "it": "Voglio."}, {"n": 145, "ru": "Я не хочу.", "it": "Non voglio."}, {"n": 146, "ru": "Мне нужно идти.", "it": "Devo andare."}, {"n": 147, "ru": "Я должен работать.", "it": "Devo lavorare."}, {"n": 148, "ru": "Я должна работать.", "it": "Devo lavorare."}, {"n": 149, "ru": "Можно войти?", "it": "Posso entrare?"}, {"n": 150, "ru": "Можно сесть?", "it": "Posso sedermi?"}];
+let i=0, cancelled=false;
+const $=id=>document.getElementById(id);
+let learned=new Set(JSON.parse(localStorage.getItem("italianRuLearned")||"[]"));
+
+function render(){
+ const x=D[i];
+ $("num").textContent=`Фраза ${i+1} / ${D.length}`;
+ $("it").textContent=x.it; $("ru").textContent=x.ru;
+ $("status").textContent=learned.has(i)?"✓ Изучено":"";
+ [...$("grid").children].forEach((b,k)=>b.classList.toggle("done",learned.has(k)));
+}
+function speakOnce(text){
+ return new Promise(resolve=>{
+  speechSynthesis.cancel();
+  const u=new SpeechSynthesisUtterance(text);
+  u.lang="it-IT"; u.rate=.88; u.onend=resolve; u.onerror=resolve;
+  speechSynthesis.speak(u);
+ });
+}
+const sleep=ms=>new Promise(r=>setTimeout(r,ms));
+async function repeat(n){
+ cancelled=false;
+ for(let k=0;k<n && !cancelled;k++){
+   const text=D[i].it;
+   await speakOnce(text);
+   if(!cancelled) await sleep(Math.max(900,text.length*95));
+ }
+}
+function stop(){cancelled=true;speechSynthesis.cancel();}
+$("play").onclick=()=>{cancelled=false;speakOnce(D[i].it)};
+$("stop").onclick=stop;
+$("rep5").onclick=()=>repeat(5); $("rep10").onclick=()=>repeat(10);
+$("shadow5").onclick=()=>repeat(5); $("shadow10").onclick=()=>repeat(10);
+$("prev").onclick=()=>{stop();i=(i-1+D.length)%D.length;render()};
+$("next").onclick=()=>{stop();i=(i+1)%D.length;render()};
+$("toggleRu").onclick=()=>$("ru").classList.toggle("hidden");
+$("toggleIt").onclick=()=>$("it").classList.toggle("hidden");
+$("studied").onclick=()=>{learned.has(i)?learned.delete(i):learned.add(i);localStorage.setItem("italianRuLearned",JSON.stringify([...learned]));render()};
+D.forEach((x,k)=>{const b=document.createElement("button");b.textContent=k+1;b.onclick=()=>{stop();i=k;render();scrollTo({top:0,behavior:"smooth"})};$("grid").appendChild(b)});
+render();
+</script>
+</body></html>
